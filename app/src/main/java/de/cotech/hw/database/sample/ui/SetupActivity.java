@@ -2,12 +2,14 @@ package de.cotech.hw.database.sample.ui;
 
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
@@ -33,6 +35,8 @@ public class SetupActivity extends AppCompatActivity implements SecurityKeyCallb
     private PinProvider pinProvider;
     private PairedSecurityKeyStorage pairedSecurityKeyStorage;
 
+    private boolean showWipeDialog = true;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,26 @@ public class SetupActivity extends AppCompatActivity implements SecurityKeyCallb
 
     @Override
     public void onSecurityKeyDiscovered(@NonNull OpenPgpSecurityKey securityKey) {
-        setupDatabase(securityKey);
+        if (showWipeDialog && !securityKey.isSecurityKeyEmpty()) {
+            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        showWipeDialog = false;
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("The Security Key is NOT empty! Wipe and generate a new key?")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener)
+                    .show();
+        } else {
+            setupDatabase(securityKey);
+        }
     }
 
     @Override
@@ -77,7 +100,6 @@ public class SetupActivity extends AppCompatActivity implements SecurityKeyCallb
 
                 saveEncryptedSecret(pairedSecurityKey, encryptedSecret);
 
-                // setup database
                 EncryptedDatabase.decryptAndGetInstance(getApplicationContext(), secret);
                 return "successfully paired key, encrypted database with random secret that is encrypted to the security key";
             }
