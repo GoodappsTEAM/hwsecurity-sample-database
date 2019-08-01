@@ -7,9 +7,8 @@ import de.cotech.hw.SecurityKeyManager;
 import de.cotech.hw.SecurityKeyManagerConfig;
 import de.cotech.hw.openpgp.OpenPgpSecurityKeyConnectionMode;
 import de.cotech.hw.openpgp.OpenPgpSecurityKeyConnectionModeConfig;
-import timber.log.Timber;
 
-public class SecurityKeyApplication extends Application {
+public class MyCustomApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
@@ -18,14 +17,9 @@ public class SecurityKeyApplication extends Application {
                 .build();
         OpenPgpSecurityKeyConnectionMode.setDefaultConfig(pgpConfig);
 
-        SecurityKeyManager securityKeyManager = SecurityKeyManager.getInstance();
-        SecurityKeyManagerConfig.Builder configBuilder = new SecurityKeyManagerConfig.Builder();
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-            configBuilder.setEnableDebugLogging(true);
-        }
-
-        securityKeyManager.init(this, configBuilder.build());
+        SecurityKeyManagerConfig config = new SecurityKeyManagerConfig.Builder()
+                .setEnableDebugLogging(BuildConfig.DEBUG)
+                .build();
+        SecurityKeyManager.getInstance().init(this, config);
     }
 }

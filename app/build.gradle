@@ -37,15 +37,13 @@ repositories {
 }
 
 dependencies {
-    implementation "de.cotech:hwsecurity-openpgp:2.2.1"
+    implementation "de.cotech:hwsecurity-openpgp:2.4.0"
 
     implementation "androidx.room:room-runtime:2.1.0"
     annotationProcessor "androidx.room:room-compiler:2.1.0"
 
     implementation "com.commonsware.cwac:saferoom.x:1.0.5"
     implementation "net.zetetic:android-database-sqlcipher:4.2.0@aar"
-    
-    implementation 'com.jakewharton.timber:timber:4.7.0'
 
     implementation 'com.google.android.material:material:1.0.0'
 

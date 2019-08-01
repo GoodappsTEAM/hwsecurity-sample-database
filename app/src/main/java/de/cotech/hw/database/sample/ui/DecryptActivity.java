@@ -74,7 +74,7 @@ public class DecryptActivity extends AppCompatActivity implements SecurityKeyCal
                 byte[] encryptedSecret = getEncryptedSecret(pairedSecurityKey);
                 ByteSecret secret = decrypt(securityKey, encryptedSecret);
                 if (secret == null) {
-                    return "decrypt failed";
+                    return "decrypt failed. Is the required key available?";
                 }
 
                 // decrypt database
@@ -110,6 +110,9 @@ public class DecryptActivity extends AppCompatActivity implements SecurityKeyCal
         try {
             PairedSecurityKey pairedSecurityKey = pairedSecurityKeyStorage.getPairedSecurityKey(
                     securityKey.getOpenPgpInstanceAid());
+            if (pairedSecurityKey == null) {
+                return null;
+            }
             OpenPgpPairedDecryptor decryptor =
                     new OpenPgpPairedDecryptor(securityKey, pinProvider, pairedSecurityKey);
 
