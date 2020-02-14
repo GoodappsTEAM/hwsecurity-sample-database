@@ -1,13 +1,27 @@
 buildscript {
     repositories {
-        google()
-        jcenter()
+    google()
+    jcenter()
+    maven {
+        credentials {
+            username 'trial'
+            password 'uKF2RVWX8zgdM4S3'
+        }
+        url "https://maven.cotech.de"
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
-    }
+    // CWAC-SafeRoom Maven repository
+    maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+dependencies {
+    // OpenPGP Card Specification
+    implementation 'de.cotech:hwsecurity-openpgp:3.0.0'
+    
+    // Room Persistence Library
+    implementation "androidx.room:room-runtime:2.1.0"
+    annotationProcessor "androidx.room:room-compiler:2.1.0"
+
+    // SQLCipher and CWAC-SafeRoom
+    implementation "com.commonsware.cwac:saferoom.x:1.1.2"
+    implementation "net.zetetic:android-database-sqlcipher:4.2.0@aar"
 }
